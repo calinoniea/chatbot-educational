@@ -131,7 +131,7 @@ export default function Navbar() {
         <Link href="/">
           <span className="text-2xl font-bold text-teal-500 cursor-pointer flex items-center gap-2">
             <ChatBubbleBottomCenterTextIcon className="h-6 w-6" />
-            EduBot
+            WizyPeazy
           </span>
         </Link>
         

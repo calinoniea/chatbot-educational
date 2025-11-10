@@ -111,14 +111,14 @@ export default function ChatbotPage() {
             {/* Header */}
             <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2">
                 <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-teal-500" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Asistent Educațional</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">WizyPeazy</h3>
             </div>
             
             {/* Zona de Mesaje (Istoric) */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.length === 0 ? (
                     <div className="flex h-full items-center justify-center">
-                        <p className="text-gray-500 text-center">Salut! Sunt EduBot, un asistent specializat pe România. 👋</p>
+                        <p className="text-gray-500 text-center">Salut! Sunt WizyPeazy, un asistent specializat pe România. 👋</p>
                     </div>
                 ) : (
                     messages.map((message, index) => (

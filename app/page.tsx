@@ -1,123 +1,109 @@
-// src/app/page.tsx
+// app/page.tsx
 "use client";
 
 import Link from 'next/link';
-// Importăm hook-urile necesare pentru a evita eroarea de hidratare
-import { useState, useEffect } from 'react'; 
+import { AcademicCapIcon, BoltIcon, GlobeAltIcon, RocketLaunchIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from '@heroicons/react/20/solid';
 
-// Functie helper pentru a genera datele (rulat doar pe client)
-const generateComets = () => {
-  const cometData = [];
-  const numComets = 10; // Numărul de comete
-
-  for (let i = 0; i < numComets; i++) {
-    cometData.push({
-      id: i,
-      top: `${Math.random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      rotation: Math.random() * 360, // Rotație unică
-      speed: `${Math.random() * 5 + 5}s`, // Viteză unică
-      delay: `${Math.random() * 10}s`, // Întârziere unică
-    });
-  }
-  return cometData;
-};
-
-// --- Componenta 'Comet' (Versiunea Tailwind) ---
-const Comet = ({ top, left, rotation, speed, delay }: any) => (
-  // 1. Părinte: Setează poziția și Rotația (traiectoria unică)
-  <div
-    className="absolute z-10" // Peste nebuloasă
-    style={{
-      top: top,
-      left: left,
-      transform: `rotate(${rotation}deg)`,
-    }}
-  >
-    {/* 2. Copil: Are aspectul (din globals.css) și animația (din config) */}
-    <div
-      className="comet-body animate-moveForward"
-      style={{
-        // Transmitem variabilele CSS către animații
-        '--speed': speed,
-        '--delay': delay,
-      } as React.CSSProperties} // Tipare TypeScript
-    />
-  </div>
-);
-// --- Sfârșit Componenta Comet ---
+// Lista de avantaje
+const featuresList = [
+  { 
+    name: "Specializare pe România", 
+    description: "Răspunsuri precise bazate pe legislația, sistemul educațional și contextul socio-istoric local.", 
+    icon: GlobeAltIcon 
+  },
+  { 
+    name: "Viteză Grozavă (Groq API)", 
+    description: "Obține răspunsuri instantanee grație arhitecturii Serverless și vitezei API-ului Groq.", 
+    icon: BoltIcon 
+  },
+  { 
+    name: "RAG Avansat (Premium)", 
+    description: "Pregătit pentru a procesa documente complexe (PDF, DOCX) pentru context specializat.", 
+    icon: AcademicCapIcon 
+  },
+];
 
 
 export default function Home() {
-  // Starea pentru comete (rezolvă eroarea de hidratare)
-  const [comets, setComets] = useState<any[]>([]);
-
-  // Generează cometele o singură dată la montarea componentei (în browser)
-  useEffect(() => {
-    setComets(generateComets());
-  }, []); 
-
+  
   return (
-    // Fundalul principal
-    // min-h-[calc(100vh-7rem)] -> 4rem pt Navbar, 3rem pt Footer (vom crea Footer-ul)
-    <div className="relative min-h-[calc(100vh-7rem)] overflow-hidden bg-gray-50 dark:bg-gray-900">
+    // Container principal (fără animații complexe pentru a menține stabilitatea)
+    <div className="bg-white dark:bg-gray-900">
       
-      {/* 1. FUNDALUL DE NEBULOASĂ */}
-      <div
-        className="absolute inset-0 z-0 animate-nebulaPulse opacity-70"
-        style={{
-          // Gradientul întunecat (premium)
-          backgroundImage: 'linear-gradient(to right, #05031a, #100e30, #08081c)',
-          backgroundSize: '400% 400%'
-        }}
-      />
+      {/* ---------------------------------------------------------------- */}
+      {/* 1. HERO SECTION (Apel la acțiune) */}
+      {/* ---------------------------------------------------------------- */}
+      <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24 lg:py-32 text-center">
+        <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white mb-4">
+          EduBot 🇷🇴: Viitorul Asistenței Academice
+        </h1>
+        <p className="max-w-3xl mx-auto text-xl text-gray-600 dark:text-gray-400 mb-8">
+          Obțineți informații documentate, ultra-rapide, direct din contextul românesc. De la legislație la istorie, totul instant.
+        </p>
 
-      {/* 2. CONTAINERUL PENTRU STELELE CĂZĂTOARE */}
-      <div className="absolute inset-0 z-10">
-        {comets.map((comet) => (
-          <Comet
-            key={comet.id}
-            top={comet.top}
-            left={comet.left}
-            rotation={comet.rotation}
-            speed={comet.speed}
-            delay={comet.delay}
-          />
-        ))}
+        {/* Buton Demo / CTA */}
+        <Link href="/signup">
+          <button className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-teal-600 hover:bg-teal-700 md:py-4 md:text-lg md:px-10 shadow-lg transition-colors gap-2">
+            Începe Gratuit <ArrowRightIcon className="h-5 w-5" />
+          </button>
+        </Link>
+        <Link href="/demo"> {/* 👈 Modificat la /demo */}
+          <button className="ml-4 inline-flex items-center justify-center px-8 py-3 border border-teal-600 dark:border-teal-400 text-base font-medium rounded-full text-teal-600 dark:text-teal-400 bg-transparent hover:bg-teal-50 md:py-4 md:text-lg md:px-10 transition-colors">
+            Vezi Demo
+          </button>
+        </Link>
       </div>
 
-      {/* 3. CONȚINUTUL PAGinii (Peste fundal și comete) */}
-      <div className="relative z-20 flex min-h-[calc(100vh-7rem)] items-center justify-center p-4">
-        <div className="w-full max-w-lg rounded-lg border border-gray-200/20 bg-white/90 p-8 shadow-xl backdrop-blur-sm dark:bg-gray-800/90">
-          
-          <div className="flex flex-col items-center gap-4 text-center">
-            
-            {/* Titlu (folosind culoarea 'brand' definită în config) */}
-            <h2 className="text-4xl font-bold text-brand-500">
-              EduBot 🇷🇴
-            </h2>
-            
-            <p className="text-lg text-gray-700 dark:text-gray-300">
-              Platforma ta de studiu specializat. Rapid, scalabil și profesional.
-            </p>
-            
-            {/* Buton Chatbot */}
-            <Link href="/chat" passHref>
-              <button className="mt-4 w-full rounded-md bg-brand-500 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 dark:ring-offset-gray-800">
-                Mergi la Chatbot
-              </button>
-            </Link>
-            
-            {/* Buton Premium */}
-            <Link href="/pricing" passHref>
-              <button className="mt-2 text-sm font-medium text-brand-500 transition-colors hover:text-brand-400">
-                Vezi Planuri Premium
-              </button>
-            </Link>
-
+      {/* ---------------------------------------------------------------- */}
+      {/* 2. FEATURES SECTION (Avantaje) */}
+      {/* ---------------------------------------------------------------- */}
+      <div className="bg-gray-100 dark:bg-gray-800 py-16 sm:py-24">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-extrabold text-center text-gray-900 dark:text-white mb-12">
+            De ce să folosești EduBot?
+          </h2>
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {featuresList.map((feature) => (
+              <div key={feature.name} className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transform hover:scale-105 transition-transform duration-300">
+                <div className="flex items-center justify-center h-12 w-12 rounded-md bg-teal-500 text-white mb-4">
+                  <feature.icon className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.name}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
+      
+      {/* ---------------------------------------------------------------- */}
+      {/* 3. ABOUT SECTION (Despre Proiect) */}
+      {/* ---------------------------------------------------------------- */}
+      <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+          <div className="mb-8 lg:mb-0">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4">
+              Viziunea CMO_EDU
+            </h2>
+           <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+              EduBot a fost conceput pentru a depăși limitările asistenților AI generaliști. Ne concentrăm pe furnizarea de informații verificate, specifice contextului românesc, pentru a sprijini cercetătorii, studenții și profesioniștii care lucrează cu date locale.
+            </p>
+            <Link href="/about-project"> {/* 👈 Modificat la /about-project */}
+              <span className="text-teal-600 dark:text-teal-400 font-medium cursor-pointer hover:underline">
+                Află cum contribuim la educație &rarr;
+              </span>
+            </Link>
+          </div>
+          <div>
+            {/* Placeholder pentru o imagine, diagramă sau grafic */}
+            <div className="bg-gray-200 dark:bg-gray-700 h-64 rounded-xl flex items-center justify-center">
+              <RocketLaunchIcon className="h-16 w-16 text-teal-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

@@ -1,43 +1,38 @@
-/* src/app/globals.css */
+/* app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ----------------------------------------------------------------
-   STILURI CUSTOM PENTRU ANIMAȚIA COMETELOR (PAGINA HOME)
-   Aceste stiluri sunt necesare pentru pseudo-elementele ::before și ::after
-   care creează capul și coada cometei.
----------------------------------------------------------------- */
-
 .comet-body {
-  /* Părintele care primește rotația */
   position: relative;
-}
-
-/* Capul Cometei (::before) - Punctul luminos */
-.comet-body::before {
-  content: "";
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: white;
-  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.7);
-  transform: translateY(-1px);
-  z-index: 1;
-}
-
-/* Coada Cometei (::after) - Dâra de lumină */
-.comet-body::after {
-  content: "";
-  position: absolute;
+  /* Ancorăm elementul pe o dimensiune fixă */
+  width: 2px;
   height: 2px;
-  border-radius: 50%;
-  /* Gradientul de la transparent (spate) la alb (cap) */
-  background: linear-gradient(to right, transparent, white);
-  right: 4px; /* Ancorează capătul luminos la 4px de la dreapta (lângă cap) */
-  top: 1px;
   
-  /* Animația pentru lățime este aplicată direct prin variabila --speed */
-  animation: animateTail var(--speed) ease-in-out infinite var(--delay);
+  /* Stilul Capului Cometei */
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.7);
+  z-index: 2;
+
+  /* Coada Cometei (::after) */
+  &::after {
+    content: "";
+    position: absolute;
+    width: 200px; /* Lungimea maximă (animată) */
+    height: 2px;
+    
+    /* CRITIC: Gradientul care se estompează în spatele capului */
+    background: linear-gradient(to left, white, rgba(255, 255, 255, 0));
+    
+    /* Poziționare FIXĂ: Coada pornește de la cap și se extinde spre stânga */
+    left: -200px; 
+    top: 0px; 
+    
+    /* Aplicăm animația de creștere a cozii (care controlează width) */
+    animation: animateTail var(--speed) ease-in-out infinite var(--delay);
+    
+    /* Ajustăm poziția pentru a fi aliniată cu mișcarea */
+    transform-origin: 100% 50%;
+  }
 }

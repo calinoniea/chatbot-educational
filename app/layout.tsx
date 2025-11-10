@@ -2,8 +2,8 @@
 import { Inter } from "next/font/google";
 import { Providers } from "./providers"; 
 import "./globals.css"; 
-import Navbar from "./components/Navbar"; // <-- Importăm Navbar-ul
-import Footer from "./components/Footer";
+import Navbar from "./components/Navbar"; 
+import Footer from "./components/Footer"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,10 +22,10 @@ export default function RootLayout({
       <body className={`${inter.className} bg-gray-50 dark:bg-gray-900`}>
         <Providers> 
             <Navbar /> 
-            <main className="min-h-[calc(100vh-4rem-4rem)]"> {/* CRITIC: Ajustăm min-height pentru Footer (aprox 4rem) */}
+            <main className="min-h-[calc(100vh-4rem-4rem)]">
                 {children}
             </main>
-            <Footer /> {/* <-- Adaugă Footer-ul AICI */}
+            <Footer /> 
         </Providers>
       </body>
     </html>
