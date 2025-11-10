@@ -1,65 +1,123 @@
-import Image from "next/image";
+// src/app/page.tsx
+"use client";
+
+import Link from 'next/link';
+// Importăm hook-urile necesare pentru a evita eroarea de hidratare
+import { useState, useEffect } from 'react'; 
+
+// Functie helper pentru a genera datele (rulat doar pe client)
+const generateComets = () => {
+  const cometData = [];
+  const numComets = 10; // Numărul de comete
+
+  for (let i = 0; i < numComets; i++) {
+    cometData.push({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      rotation: Math.random() * 360, // Rotație unică
+      speed: `${Math.random() * 5 + 5}s`, // Viteză unică
+      delay: `${Math.random() * 10}s`, // Întârziere unică
+    });
+  }
+  return cometData;
+};
+
+// --- Componenta 'Comet' (Versiunea Tailwind) ---
+const Comet = ({ top, left, rotation, speed, delay }: any) => (
+  // 1. Părinte: Setează poziția și Rotația (traiectoria unică)
+  <div
+    className="absolute z-10" // Peste nebuloasă
+    style={{
+      top: top,
+      left: left,
+      transform: `rotate(${rotation}deg)`,
+    }}
+  >
+    {/* 2. Copil: Are aspectul (din globals.css) și animația (din config) */}
+    <div
+      className="comet-body animate-moveForward"
+      style={{
+        // Transmitem variabilele CSS către animații
+        '--speed': speed,
+        '--delay': delay,
+      } as React.CSSProperties} // Tipare TypeScript
+    />
+  </div>
+);
+// --- Sfârșit Componenta Comet ---
+
 
 export default function Home() {
+  // Starea pentru comete (rezolvă eroarea de hidratare)
+  const [comets, setComets] = useState<any[]>([]);
+
+  // Generează cometele o singură dată la montarea componentei (în browser)
+  useEffect(() => {
+    setComets(generateComets());
+  }, []); 
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    // Fundalul principal
+    // min-h-[calc(100vh-7rem)] -> 4rem pt Navbar, 3rem pt Footer (vom crea Footer-ul)
+    <div className="relative min-h-[calc(100vh-7rem)] overflow-hidden bg-gray-50 dark:bg-gray-900">
+      
+      {/* 1. FUNDALUL DE NEBULOASĂ */}
+      <div
+        className="absolute inset-0 z-0 animate-nebulaPulse opacity-70"
+        style={{
+          // Gradientul întunecat (premium)
+          backgroundImage: 'linear-gradient(to right, #05031a, #100e30, #08081c)',
+          backgroundSize: '400% 400%'
+        }}
+      />
+
+      {/* 2. CONTAINERUL PENTRU STELELE CĂZĂTOARE */}
+      <div className="absolute inset-0 z-10">
+        {comets.map((comet) => (
+          <Comet
+            key={comet.id}
+            top={comet.top}
+            left={comet.left}
+            rotation={comet.rotation}
+            speed={comet.speed}
+            delay={comet.delay}
+          />
+        ))}
+      </div>
+
+      {/* 3. CONȚINUTUL PAGinii (Peste fundal și comete) */}
+      <div className="relative z-20 flex min-h-[calc(100vh-7rem)] items-center justify-center p-4">
+        <div className="w-full max-w-lg rounded-lg border border-gray-200/20 bg-white/90 p-8 shadow-xl backdrop-blur-sm dark:bg-gray-800/90">
+          
+          <div className="flex flex-col items-center gap-4 text-center">
+            
+            {/* Titlu (folosind culoarea 'brand' definită în config) */}
+            <h2 className="text-4xl font-bold text-brand-500">
+              EduBot 🇷🇴
+            </h2>
+            
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              Platforma ta de studiu specializat. Rapid, scalabil și profesional.
+            </p>
+            
+            {/* Buton Chatbot */}
+            <Link href="/chat" passHref>
+              <button className="mt-4 w-full rounded-md bg-brand-500 px-6 py-3 text-lg font-semibold text-white shadow-md transition-colors hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 dark:ring-offset-gray-800">
+                Mergi la Chatbot
+              </button>
+            </Link>
+            
+            {/* Buton Premium */}
+            <Link href="/pricing" passHref>
+              <button className="mt-2 text-sm font-medium text-brand-500 transition-colors hover:text-brand-400">
+                Vezi Planuri Premium
+              </button>
+            </Link>
+
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
