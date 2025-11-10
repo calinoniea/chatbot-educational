@@ -45,7 +45,7 @@ export default function DemoPage() {
             <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <ChatBubbleBottomCenterTextIcon className="h-6 w-6 text-teal-500" />
-                    <h3 className className="text-xl font-bold text-gray-900 dark:text-white">Demo Chatbot (Exemplu)</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">Demo Chatbot (Exemplu)</h3>
                 </div>
                 {/* Apel la acțiune în Header */}
                 <Link href="/signup">
