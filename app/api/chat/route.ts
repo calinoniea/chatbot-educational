@@ -1,17 +1,21 @@
-// src/app/api/chat/route.ts
+// app/api/chat/route.ts
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
-// Importăm tipul corect de mesaj din SDK
-import { ChatCompletionMessageParam } from 'groq-sdk/resources/chat/completions'; 
+
+// 🚨 CORECTURĂ CRITICĂ: Definirea Tipului de Mesaj în mod manual
+// Aceasta rezolvă eroarea de compilare 'Module not found: ChatCompletionMessageParam'
+type GroqMessage = {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+};
 
 // Inițializarea clientului Groq
 const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY, 
+    apiKey: process.env.GROQ_API_KEY, // Citită din .env.local sau Vercel
 });
 
-// Definirea System Prompt-ului
-const systemPrompt: ChatCompletionMessageParam = {
-  // CRITIC: Rolul trebuie să fie un literal, nu un string generic
+// Definirea System Prompt-ului (folosind noul tip)
+const systemPrompt: GroqMessage = {
   role: "system", 
   content: "Ești EduBot, un asistent AI academic și profesional, specializat strict pe România. Misiunea ta este să oferi răspunsuri precise, obiective și documentate despre legislație, istorie, geografie și educația din România. Folosește un ton formal și politicos. Dacă o întrebare nu are legătură cu România, refuză politicos să răspunzi."
 };
@@ -24,28 +28,29 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Istoric invalid' }, { status: 400 });
         }
 
-        // 1. Adaptarea și Maparea Formatului Istoric Flowise la Groq
-        // CRITIC: Mapăm role-ul Front-End la role-ul Groq ("user" | "assistant")
-        const mappedMessages = history.map((msg: any) => {
+        // 1. Adaptarea și Maparea Formatului Istoric (Front-End -> Groq)
+        // Flowise folosea "userMessage" / "apiMessage"
+        // Groq/OpenAI folosesc "user" / "assistant"
+        const mappedMessages: GroqMessage[] = history.map((msg: any) => {
             const role = msg.role === 'userMessage' ? 'user' : 'assistant';
             
-            // Returnăm un obiect care se potrivește strict cu tipul ChatCompletionUserMessageParam sau ChatCompletionAssistantMessageParam
             return {
-                role: role as 'user' | 'assistant', // Forțăm tipul de rol
-                content: msg.content as string, // Forțăm tipul de conținut
+                role: role as 'user' | 'assistant', 
+                content: msg.content as string, 
             };
         });
         
         // 2. INJECTĂM System Prompt-ul și adăugăm mesajele utilizatorului
-        const finalMessages: ChatCompletionMessageParam[] = [
+        const finalMessages: GroqMessage[] = [
             systemPrompt, 
             ...mappedMessages 
         ];
 
         // 3. Apelăm API-ul Groq
         const chatCompletion = await groq.chat.completions.create({
-            messages: finalMessages, // Folosim array-ul final
-            model: "meta-llama/llama-4-scout-17b-16e-instruct", // Să presupunem că acesta este modelul activ
+            messages: finalMessages, 
+            // 🚨 CRITIC: Asigură-te că folosești un model ACTIV, confirmat de tine
+            model: "llama-3.1-8b-instant", 
             temperature: 0.7,
         });
         
